@@ -34,3 +34,32 @@ npm run dev
 ```
 npm add -D sass
 ```
+
+- cancelliamo lo style.css e andiamo in assets e ci creiamo una cartella scss con dentro un file style.scss
+- cambiamo l'import nel main.js con:
+
+```
+import "./assets/scss/style.scss";
+```
+
+- ora importiamo bootstrap, per prima cosa va installato:
+
+```
+npm i bootstrap@5.3.2
+```
+
+- importiamo il js di bootstrap in main.js:
+
+```
+import * as bootstrap from 'bootstrap'
+```
+
+- importiamo lo style di bootstrap dentro lo style.scss
+
+```
+@import "bootstrap/scss/bootstrap";
+```
+
+- ora bootstrap è pronto
+
+- iniziamo a crearci dei componenti ora, ci creiamo la cartellina projects e dentro due componenti ProjectCard e ProjectList
