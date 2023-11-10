@@ -267,3 +267,37 @@ export default {
 ````
 
 - ora dobbiamo spostarci su laravel-api per inviare anche i badge types e le tecnologies.
+
+- in ProjectCard:
+
+```html
+<template>
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-header d-flex justify-content-between align-items-start">
+        <!-- in style stampo il color dei type e poi stampo il label -->
+        <span
+          class="badge mx-1"
+          :style="{ backgroundColor: project.type.color }"
+          >{{ project.type.label }}
+        </span>
+
+        <div>
+          <!-- stessa cosa ma siccome sono più tecnologie metto un v-for -->
+          <span
+            class="badge roudend-pill mx-1"
+            v-for="technology in project.technologies"
+            :style="{ backgroundColor: technology.color }"
+            >{{ technology.label }}
+          </span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p><strong>Nome Progetto: </strong>{{ project.name }}</p>
+        <p><strong>Link: </strong>{{ project.link }}</p>
+        <p><strong>Descrizione: </strong>{{ project.description }}</p>
+      </div>
+    </div>
+  </div>
+</template>
+```

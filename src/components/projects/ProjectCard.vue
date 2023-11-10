@@ -14,6 +14,7 @@ export default {
   <div class="col">
     <div class="card h-100">
       <div class="card-header d-flex justify-content-between align-items-start">
+        <!-- in style stampo il color dei type e poi stampo il label -->
         <span
           class="badge mx-1"
           :style="{ backgroundColor: project.type.color }"
@@ -21,6 +22,7 @@ export default {
         </span>
 
         <div>
+          <!-- stessa cosa ma siccome sono più tecnologie metto un v-for -->
           <span
             class="badge roudend-pill mx-1"
             v-for="technology in project.technologies"
