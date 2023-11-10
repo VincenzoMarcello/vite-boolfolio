@@ -301,3 +301,36 @@ export default {
   </div>
 </template>
 ```
+
+- ora facciamo la paginazione:
+<!-- in App.vue -->
+
+```js
+// facciamo questo per la paginazione all'inizio è null
+      pagination: {
+        links: null,
+      },
+```
+
+```html
+<template>
+  <div class="container">
+    <h1>Boolfolio</h1>
+    <hr class="mb-0" />
+    <ProjectList :projects="projects" />
+
+    <!-- qui mettiamo la navigation per la paginazione -->
+    <nav class="py-3">
+      <ul class="pagination">
+        <li
+          v-for="link in pagination.links"
+          @click="fetchProjects(link.url)"
+          class="page-item"
+        >
+          <a class="page-link" href="#" v-html="link.label"></a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</template>
+```

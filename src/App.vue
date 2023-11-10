@@ -12,6 +12,10 @@ export default {
       api: {
         baseUrl: "http://127.0.0.1:8000/api/",
       },
+      // facciamo questo per la paginazione all'inizio è null
+      pagination: {
+        links: null,
+      },
     };
   },
 
@@ -22,6 +26,8 @@ export default {
       axios.get(uri).then((response) => {
         // console.log(response.data.data);
         this.projects = response.data.data;
+        // questo serve per la paginazione
+        this.pagination.links = response.data.links;
       });
     },
   },
@@ -37,6 +43,19 @@ export default {
     <h1>Boolfolio</h1>
     <hr class="mb-0" />
     <ProjectList :projects="projects" />
+
+    <!-- qui mettiamo la navigation per la paginazione -->
+    <nav class="py-3">
+      <ul class="pagination">
+        <li
+          v-for="link in pagination.links"
+          @click="fetchProjects(link.url)"
+          class="page-item"
+        >
+          <a class="page-link" href="#" v-html="link.label"></a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </template>
 
