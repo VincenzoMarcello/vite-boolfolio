@@ -63,3 +63,207 @@ import * as bootstrap from 'bootstrap'
 - ora bootstrap è pronto
 
 - iniziamo a crearci dei componenti ora, ci creiamo la cartellina projects e dentro due componenti ProjectCard e ProjectList
+
+- ora proviamo a importare il componente ProjectList all'interno di App.vue e vediamo se funziona:
+
+```html
+<script>
+  import ProjectList from "./components/projects/ProjectList.vue";  <----- IMPORTIAMO
+
+  export default {
+    data() {
+      return {
+        title: "Home",
+      };
+    },
+
+    components: {
+      ProjectList,   <----- REGISTRIAMO
+    },
+  };
+</script>
+
+<template>
+  <h1>title</h1>
+  <ProjectList /> <----- USIAMO
+</template>
+
+<style lang="scss"></style>
+```
+
+- ora dobbiamo fare la chiamata axios per prendere i projects dal back-office, per prima cosa installiamo axios:
+
+```
+npm i axios
+```
+
+- ora importiamolo dove vogliamo fare la chiamata nel nostro caso in App.vue
+
+```
+import axios from 'axios';
+```
+
+- proviamo a fare la chiamata e a ricevere i dati al caricamento della pagina quindi nel created:
+
+```html
+<script>
+  export default {
+    data() {
+      return {
+        // METTIAMO UN PROJECTS VUOTO CHE SI RIEMPIRA'
+        projects: [],
+      };
+    },
+
+    components: { ProjectList },
+
+    created() {
+      axios.get("http://127.0.0.1:8000/api/projects").then((response) => {  <--- FACCIAMO LA CHIAMATA
+        // console.log(response.data.data);
+
+        // METTIAMO L' ARRAY PROJECTS CHE CI ARRIVA DALLA CHIAMATA NEL PROJECTS VUOTO IN DATA
+        this.projects = response.data.data;
+      });
+    },
+  };
+</script>
+```
+
+- ora spostiamo la chiamata in un metodo:
+
+```js
+......
+  methods: {
+    fetchProjects() {
+      axios.get("http://127.0.0.1:8000/api/projects").then((response) => {
+        // console.log(response.data.data);
+        this.projects = response.data.data;
+      });
+    },
+  },
+
+   created() {
+    this.fetchProjects();
+  },
+......
+```
+
+- al posto del url statico rendiamolo dinamico in maniera tale da poter mettere più pagine, la prima parte dell'url siccome è sempre uguale mettiamola dentro una variabile e passiamo un parametro al get che di default sarà quello della pagina 1 ma se gli diamo un nuovo url prenderà quello:
+
+```js
+  data() {
+    return {
+      projects: [],
+      api: {                            <-----------
+        baseUrl: "http://127.0.0.1:8000/api/", <----------
+      },
+    };
+  },
+
+
+  methods: {
+    fetchProjects(uri = this.api.baseUrl + "projects") {  <-----
+      axios.get(uri).then((response) => {
+        // console.log(response.data.data);
+        this.projects = response.data.data;
+      });
+    },
+  },
+
+   created() {
+    this.fetchProjects("inseriamo ad esempio l'url della pagina 2");
+  },
+```
+
+- ora dobbiamo passare l'array di projects ricevuto dalla chiamata axios al componente ProjectsList per stamparli in delle card a schermo:
+<!-- in App.vue passiamo la prop -->
+
+```js
+<template>
+  <h1>Hello World</h1>
+  <ProjectList :projects="projects" /> <------
+</template>
+```
+
+<!-- in Project.List -->
+
+```js
+<script>
+....
+ props: {
+    projects: Array,
+  },
+....
+</script>
+
+<template>
+  <div class="container">
+    <h2>Lista Progetti</h2>
+    <div class="row row-cols-4 g-4">
+      <div class="col" v-for="project in projects"> <----
+        <div class="card h-100">
+          <div class="card-body">
+            <h4>{{ project.name }}</h4> <----
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+- ora siccome abbiamo un componente PostCard spostiamo la card all'interno di quest'ultimo:
+<!-- in Project.Card -->
+
+```js
+......
+//  importo l'oggetto che contiene le varie chiavi (name,id,link ecc)
+  props: { project: Object },
+......
+
+<template>
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <h4>{{ project.name }}</h4>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+<!-- in Project.List -->
+
+````js
+<script>
+// importo il componente card
+import ProjectCard from "./ProjectCard.vue";
+
+export default {
+  data() {
+    return {};
+  },
+  // importo l'array di oggetti projects da App.vue che arriveranno
+  // tramite chiamata axios a App.vue dal back-end
+  props: { projects: Array },
+
+  // registro il componente card
+  components: { ProjectCard },
+};
+</script>
+
+<template>
+  <div class="container">
+    <h2>Lista Progetti</h2>
+    <div class="row row-cols-4 g-4">
+      <!-- stampo con un v for tante card e mando tramite props l'oggetto project per fare la base di una card -->
+      <ProjectCard v-for="project in projects" :project="project" />
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped></style>
+```
+````
+
+- ora dobbiamo spostarci su laravel-api per inviare anche i badge types e le tecnologies.
