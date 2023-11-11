@@ -44,6 +44,9 @@ export default {
     <hr class="mb-0" />
     <ProjectList :projects="projects" />
 
+    <!-- qui mettiamo la pagina che cambia dinamicamente in base al path (una sorta di rotta) -->
+    <router-view></router-view>
+
     <!-- qui mettiamo la navigation per la paginazione -->
     <nav class="py-3">
       <ul class="pagination">
