@@ -75,8 +75,92 @@ import { createWebHistory, createRouter } from "vue-router";
 
 const router = createRouter({
   // qui aggiungiamo la history
+  history: createWebHistory(),
+
   // qui aggiungiamo le rotte
+  routes: [],
 });
 
 export { router };
+```
+
+- ora facciamo una cartellina pages in cui ci saranno le varie pagine e ci creiamo:
+  - HomePage
+  - Portfolio
+  - ProjectDetail
+
+<!-- esempio Portofolio -->
+
+```html
+<script>
+  import ProjectList from "../components/projects/ProjectList.vue";
+
+  export default {
+    data() {
+      return {
+        title: "Hello world",
+      };
+    },
+
+    components: { ProjectList },
+  };
+</script>
+
+<template>
+  <ProjectList />
+</template>
+
+<style lang="scss" scoped></style>
+```
+
+- ora andiamo in index.js nel router e importiamo le varie pagine e mettiamo le rotte:
+
+```js
+import { createWebHistory, createRouter } from "vue-router";
+
+// TODO qui importiamo componenti
+import HomePage from "../pages/HomePage.vue";   <------
+
+import Portfolio from "../pages/Portfolio.vue"; <------
+
+const router = createRouter({
+  // TODO qui aggiungiamo la history
+  history: createWebHistory(),
+
+  // TODO qui aggiungiamo le rotte
+  routes: [
+    {
+      name: "homepage",         <------
+      path: "/",
+      component: HomePage,
+    },
+    {
+      name: "portfolio",      <------
+      path: "/portfolio",
+      component: Portfolio,
+    },
+  ],
+});
+
+export { router };
+```
+
+- e importiamo il router nel main.js:
+
+```js
+import { createApp } from "vue";
+import "./assets/scss/style.scss";
+
+// # importo il router
+import { router } from "./router";   <------
+
+// # importo il js di bootstrap
+import * as bootstrap from "bootstrap";
+
+import App from "./App.vue";
+
+const app = createApp(App);
+// # usiamo il router
+app.use(router);     <------
+app.mount("#app");
 ```
