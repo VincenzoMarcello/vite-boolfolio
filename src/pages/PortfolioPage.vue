@@ -3,9 +3,7 @@ import ProjectList from "../components/projects/ProjectList.vue";
 
 export default {
   data() {
-    return {
-      title: "Hello world",
-    };
+    return {};
   },
 
   components: { ProjectList },

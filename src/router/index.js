@@ -3,7 +3,9 @@ import { createWebHistory, createRouter } from "vue-router";
 // TODO qui importiamo componenti
 import HomePage from "../pages/HomePage.vue";
 
-import Portfolio from "../pages/Portfolio.vue";
+import PortfolioPage from "../pages/PortfolioPage.vue";
+
+import ProjectDetailPage from "../pages/ProjectDetailPage.vue";
 
 const router = createRouter({
   // TODO qui aggiungiamo la history
@@ -19,7 +21,12 @@ const router = createRouter({
     {
       name: "portfolio",
       path: "/portfolio",
-      component: Portfolio,
+      component: PortfolioPage,
+    },
+    {
+      name: "project-detail",
+      path: "/portfolio/:id",
+      component: ProjectDetailPage,
     },
   ],
 });

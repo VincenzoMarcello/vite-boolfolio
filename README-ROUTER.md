@@ -164,3 +164,174 @@ const app = createApp(App);
 app.use(router);     <------
 app.mount("#app");
 ```
+
+- per non avere problemi importiamo la chiamata axios e tutto da App.vue al componente ProjectList quindi:
+<!-- App.vue sarà -->
+
+```html
+<script>
+  import NavBar from "./components/ui/NavBar.vue";
+
+  export default {
+    data() {
+      return {};
+    },
+
+    components: { NavBar },
+  };
+</script>
+
+<template>
+  <NavBar />
+  <!-- qui mettiamo la pagina che cambia dinamicamente in base al path (una sorta di rotta) -->
+  <router-view></router-view>
+</template>
+
+<style lang="scss"></style>
+```
+
+ci andremo pure a creare una nav che porta ai vari link del nostro sito e la chiameremo NavBar in una cartella ui:
+
+```html
+<script>
+  // import MyComponent from "./components/MyComponent.vue";
+
+  export default {
+    data() {
+      return {};
+    },
+
+    // components: {
+    //   MyComponent,
+    // },
+  };
+</script>
+
+<template>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <router-link class="navbar-brand" :to="{ name: 'portfolio' }"
+        >Boolfolio</router-link
+      >
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <router-link class="nav-link active" :to="{ name: 'homepage' }"
+              >Homepage</router-link
+            >
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link active" :to="{ name: 'portfolio' }"
+              >Portfolio</router-link
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<style lang="scss" scoped></style>
+```
+
+- in index.js del router:
+
+```js
+import PortfolioPage from "../pages/PortfolioPage.vue";
+
+import ProjectDetailPage from "../pages/ProjectDetailPage.vue";
+
+const router = createRouter({
+  // TODO qui aggiungiamo la history
+  history: createWebHistory(),
+
+  // TODO qui aggiungiamo le rotte
+  routes: [
+    {
+      name: "homepage",              <-----
+      path: "/",
+      component: HomePage,
+    },
+    {
+      name: "portfolio",
+      path: "/portfolio",
+      component: PortfolioPage,    <-----
+    },
+    {
+      name: "project-detail",
+      path: "/portfolio/:id",
+      component: ProjectDetailPage,  <-----
+    },
+  ],
+});
+
+export { router };
+```
+
+- poi andiamo sulla repo in laravel e modifichiamo alcune cose
+
+- andiamo a scrivere ora nella pagina ProjectDetailPage:
+
+```js
+<script>
+import ProjectCard from "../components/projects/ProjectCard.vue";
+
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      project: {},
+      api: {
+        baseUrl: "http://127.0.0.1:8000/api/",
+      },
+    };
+  },
+
+  components: {
+    ProjectCard,
+  },
+
+  created() {
+    axios
+      .get(this.api.baseUrl + "projects/" + this.$route.params.id)
+      .then((response) => {
+        this.project = response.data;
+      });
+  },
+};
+</script>
+
+<template>
+  <div class="container">
+    <ProjectCard :project="project" v-if="project"></ProjectCard>
+  </div>
+</template>
+
+<style lang="scss" scoped></style>
+```
+
+- ci creiamo un pulsante router-link che porta al dettaglio nel componente ProjectCard:
+
+```html
+........
+<div class="card-footer">
+  <router-link
+    :to="{ name: 'project-detail', params: { id: project.id } }"
+    class="btn btn-success"
+    >Vedi
+  </router-link>
+</div>
+........
+```
